@@ -11,4 +11,7 @@ import RealmSwift
 
 class TodoItem: Object {
     @objc dynamic var title = ""
+    @objc dynamic var todoDetail = ""
+    @objc dynamic var checked:Bool = false
+    
 }

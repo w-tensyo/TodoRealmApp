@@ -9,37 +9,59 @@
 import UIKit
 import RealmSwift
 
-class AddMemoViewController: UIViewController,UITextFieldDelegate {
+class AddMemoViewController: UIViewController,UITextFieldDelegate, UITextViewDelegate {
     
-    let todoItem = TodoItem()
     //Realmをインスタンス化
     let realm = try! Realm()
+    
+    
+    let todoItem = TodoItem()
+    var todoDetailString:String = ""
+    
+    //Todoのタイトルを入力
     @IBOutlet weak var toDoTextField: UITextField!
+    //Todoの詳細を入力
+    @IBOutlet weak var toDoDetailTextView: UITextView!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        toDoTextField.delegate = self
         
-        toDoTextField.returnKeyType = .done
+        toDoTextField.returnKeyType = .next
+        
+        toDoDetailTextView.delegate = self
+        toDoDetailTextView.returnKeyType = .done
 
     }
     
-    //キーパッドの"決定"ボタンをタップした時の処理
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        addTodoAction()
-        
-        return true
+//    //キーパッドの"決定"ボタンをタップした時の処理
+//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//        addTodoAction()
+//
+//        return true
+//    }
+    //入力画面 or キーパットの外をタップした時にキーパットを閉じる処理
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if(toDoDetailTextView.isFirstResponder){
+            self.toDoDetailTextView.resignFirstResponder()
+        }
     }
     
-    //"登録"ボタンをタップした時の処理
-    @IBAction func addMemoButton(_ sender: Any) {
+    @IBAction func registButton(_ sender: Any) {
         addTodoAction()
     }
+    
+    //textViewの編集内容を反映させるための処理
+    func textViewDidChange(_ textView: UITextView) {
+        todoDetailString = self.toDoDetailTextView.text
+    }
+
     
     //Realmへのデータ追加処理をまとめる
-    func addTodoItem(title: String){
+    func addTodoItem(title: String,detail :String){
         try! realm.write{
-            realm.add(TodoItem(value: ["title": title]))
+            realm.add(TodoItem(value: ["title": title, "todoDetail": detail,"checked": false]))
         }
     }
     
@@ -48,6 +70,11 @@ class AddMemoViewController: UIViewController,UITextFieldDelegate {
         //TextField内に値が入力されているか判定
         if toDoTextField.text != ""{
             todoItem.title = toDoTextField.text!
+            if todoDetailString != ""{
+                todoItem.todoDetail = todoDetailString
+            }else{
+                todoItem.todoDetail = "詳細なし"
+            }
             //入力されていた場合、Realmへのデータ追加処理を実施
             try! realm.write {
                 realm.add(todoItem)
