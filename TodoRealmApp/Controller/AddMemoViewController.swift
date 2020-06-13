@@ -16,7 +16,7 @@ class AddMemoViewController: UIViewController,UITextFieldDelegate, UITextViewDel
     
     
     let todoItem = TodoItem()
-    var todoDetailString:String = ""
+    var todoDetailString:String = "タスク詳細を入力"
     
     //Todoのタイトルを入力
     @IBOutlet weak var toDoTextField: UITextField!
@@ -28,19 +28,26 @@ class AddMemoViewController: UIViewController,UITextFieldDelegate, UITextViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        toDoTextField.returnKeyType = .next
-        
-        toDoDetailTextView.delegate = self
+        //キーパッドの決定ボタンの種類を指定.done(決定）
+        toDoTextField.returnKeyType = .done
         toDoDetailTextView.returnKeyType = .done
-
+        
+        //Delegateメソッドを設定
+        toDoDetailTextView.delegate = self
+        
+        //toDoTextFieldのview設定
+        toDoTextField.layer.borderColor = UIColor.systemGray.cgColor
+        //toDoDetailTextViewのview設定
+        toDoDetailTextView.layer.borderWidth = 1.0
+        toDoDetailTextView.layer.cornerRadius = 5.0
+        toDoDetailTextView.layer.borderColor = UIColor.systemGray3.cgColor
+        
+        //TextViewのDefault値を設定
+        toDoDetailTextView.text = todoDetailString
+        
     }
     
-//    //キーパッドの"決定"ボタンをタップした時の処理
-//    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        addTodoAction()
-//
-//        return true
-//    }
+
     //入力画面 or キーパットの外をタップした時にキーパットを閉じる処理
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if(toDoDetailTextView.isFirstResponder){
@@ -70,7 +77,7 @@ class AddMemoViewController: UIViewController,UITextFieldDelegate, UITextViewDel
         //TextField内に値が入力されているか判定
         if toDoTextField.text != ""{
             todoItem.title = toDoTextField.text!
-            if todoDetailString != ""{
+            if todoDetailString != "" && todoDetailString != "タスク詳細を入力"{
                 todoItem.todoDetail = todoDetailString
             }else{
                 todoItem.todoDetail = "詳細なし"
@@ -78,8 +85,6 @@ class AddMemoViewController: UIViewController,UITextFieldDelegate, UITextViewDel
             //入力されていた場合、Realmへのデータ追加処理を実施
             try! realm.write {
                 realm.add(todoItem)
-                print("書き込みに成功しているはずです")
-                print(Realm.Configuration.defaultConfiguration.fileURL!)
                 
                 //テキストフィールドの値を空にして、キーボードを閉じる
                 toDoTextField.text = ""
