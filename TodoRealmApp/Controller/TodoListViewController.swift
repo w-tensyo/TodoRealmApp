@@ -66,6 +66,8 @@ class TodoListViewController: UIViewController,UITableViewDelegate,UITableViewDa
         return cell
         
     }
+    
+    //セルの高さを指定するメソッド
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var height:CGFloat?
         if segmentStatus == 0{

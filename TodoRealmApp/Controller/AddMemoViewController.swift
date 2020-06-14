@@ -93,8 +93,19 @@ class AddMemoViewController: UIViewController,UITextFieldDelegate, UITextViewDel
             }
         }else{
             //UIAlertControllerに切り替える予定。今はとりあえずこれ
-            print("エラーです")
+            alertDisplay()
         }
     }
 
+    
+    //alertを実装
+    func alertDisplay(){
+        let alert:UIAlertController = UIAlertController(title: "未入力の項目があります", message: "タイトルを入力してください", preferredStyle: .alert)
+        
+        let okAlert:UIAlertAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+        
+        alert.addAction(okAlert)
+        
+        present(alert, animated: true, completion: nil)
+    }
 }

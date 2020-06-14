@@ -35,7 +35,7 @@ class DetailTodoViewController: UIViewController, UITextViewDelegate {
         todoList = realm.objects(TodoItem.self)
         
         
-        
+        //各オブジェクトに対象の配列の要素をセット
         todoDetailTitleLabel.text = todoList[indexNumber!].title
         todoDetailTextView.text = todoList[indexNumber!].todoDetail
         todoStatusSwitch.isOn = todoList[indexNumber!].checked
@@ -68,10 +68,7 @@ class DetailTodoViewController: UIViewController, UITextViewDelegate {
     
     //登録ボタンをタップした時の処理
     @IBAction func updateButton(_ sender: Any) {
-        updateReamlRecord()
-        
-        todoDetailTextView.endEditing(true)
-        self.navigationController?.popViewController(animated: true)
+        alertDisplay()
     }
     
     //レコードを上書きする処理
@@ -90,5 +87,22 @@ class DetailTodoViewController: UIViewController, UITextViewDelegate {
         }
     }
     
-    
+    //alertを実装
+    func alertDisplay(){
+        let alert:UIAlertController = UIAlertController(title: "編集を保存", message: "タスク内容を上書きします。よろしいですか？", preferredStyle: .alert)
+        
+        let okAlert:UIAlertAction = UIAlertAction(title: "OK", style: .default, handler: { (action: UIAlertAction!) in
+            
+            self.updateReamlRecord()
+            
+            self.todoDetailTextView.endEditing(true)
+            self.navigationController?.popViewController(animated: true)
+            })
+        
+        let cancel:UIAlertAction = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+        
+        alert.addAction(okAlert)
+        alert.addAction(cancel)
+        present(alert, animated: true, completion: nil)
+    }
 }
